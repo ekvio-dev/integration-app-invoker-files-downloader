@@ -1,0 +1,22 @@
+{
+  "name": "ekvio-dev/integration-app-invoker-files-downloader",
+  "description": "Ekvio files downloader invoker",
+  "authors": [
+    {
+      "name": "Dmitry Vuylov",
+      "email": "vuylov.dmitry@e-queo.com"
+    }
+  ],
+  "type": "project",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "require": {
+    "league/flysystem": "^1.0",
+    "ekvio-dev/integration-app-contracts": "^1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ekvio\\Integration\\Invoker\\": "src/"
+    }
+  }
+}
