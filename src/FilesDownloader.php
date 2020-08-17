@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App;
+namespace Ekvio\Integration\Invoker;
 
 use Ekvio\Integration\Contracts\Invoker;
 use Ekvio\Integration\Contracts\Profiler;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
 use RuntimeException;
 
@@ -38,7 +39,7 @@ class FilesDownloader implements Invoker
 
     /**
      * @param array $parameters
-     * @throws \League\Flysystem\FileNotFoundException
+     * @throws FileNotFoundException
      */
     public function __invoke(array $parameters = []): void
     {
