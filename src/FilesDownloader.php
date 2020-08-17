@@ -38,13 +38,13 @@ class FilesDownloader implements Invoker
     }
 
     /**
-     * @param array $parameters
+     * @param array $arguments
      * @throws FileNotFoundException
      */
-    public function __invoke(array $parameters = []): void
+    public function __invoke(array $arguments = []): void
     {
-        $files = $parameters['files'];
-        $destination = $parameters['destination'];
+        $files = $arguments['files'];
+        $destination = $arguments['destination'];
 
         if(!$files) {
             throw new RuntimeException('No files in parameters');

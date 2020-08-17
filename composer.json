@@ -12,7 +12,7 @@
   "license": "MIT",
   "require": {
     "league/flysystem": "^1.0",
-    "ekvio-dev/integration-app-contracts": "^1"
+    "ekvio-dev/integration-app-contracts": "^2"
   },
   "autoload": {
     "psr-4": {

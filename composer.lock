@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a63f04ca13da3c53045e9f8f9feb34f2",
+    "content-hash": "5bdbb0837862f0d76cd74c27fdc363db",
     "packages": [
         {
             "name": "ekvio-dev/integration-app-contracts",
-            "version": "1.0.1",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ekvio-dev/integration-app-contracts.git",
-                "reference": "06e7ce351c670438ac53793e73e66fe424e278b8"
+                "reference": "ccd0b6751191ca9eeacf9233603fb3e0ab7fcce8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ekvio-dev/integration-app-contracts/zipball/06e7ce351c670438ac53793e73e66fe424e278b8",
-                "reference": "06e7ce351c670438ac53793e73e66fe424e278b8",
+                "url": "https://api.github.com/repos/ekvio-dev/integration-app-contracts/zipball/ccd0b6751191ca9eeacf9233603fb3e0ab7fcce8",
+                "reference": "ccd0b6751191ca9eeacf9233603fb3e0ab7fcce8",
                 "shasum": ""
             },
             "require": {
@@ -40,7 +40,7 @@
                 }
             ],
             "description": "Equeo integration application contracts",
-            "time": "2020-08-03T11:58:23+00:00"
+            "time": "2020-08-10T13:19:37+00:00"
         },
         {
             "name": "league/flysystem",
