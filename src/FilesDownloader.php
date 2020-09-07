@@ -30,6 +30,12 @@ class FilesDownloader implements Invoker
      */
     private $profiler;
 
+    /**
+     * FilesDownloader constructor.
+     * @param FilesystemInterface $localFs
+     * @param FilesystemInterface $remoteFs
+     * @param Profiler $profiler
+     */
     public function __construct(FilesystemInterface $localFs, FilesystemInterface $remoteFs, Profiler $profiler)
     {
         $this->localFs = $localFs;
