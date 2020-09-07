@@ -45,9 +45,10 @@ class FilesDownloader implements Invoker
 
     /**
      * @param array $arguments
+     * @return array
      * @throws FileNotFoundException
      */
-    public function __invoke(array $arguments = []): void
+    public function __invoke(array $arguments = [])
     {
         $files = $arguments['parameters']['files'];
         $destination = $arguments['parameters']['destination'];
@@ -66,6 +67,7 @@ class FilesDownloader implements Invoker
             $this->localFs->createDir($destination);
         }
 
+        $filenames = [];
         foreach ($files as $file) {
             $this->profiler->profile(sprintf('Checking %s file existence...', $file));
             if(!$this->remoteFs->has($file)) {
@@ -77,7 +79,11 @@ class FilesDownloader implements Invoker
             if(!$this->localFs->putStream($filename, $this->remoteFs->readStream($file))) {
                 throw new RuntimeException(sprintf('Cannot write to %s file...', $filename));
             }
+
+            $filenames[] = $filename;
         }
+
+        return $filenames;
     }
 
     /**
