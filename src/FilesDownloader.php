@@ -15,20 +15,20 @@ use RuntimeException;
  */
 class FilesDownloader implements Invoker
 {
-    private const NAME = 'Files downloader';
+    protected const NAME = 'Files downloader';
 
     /**
      * @var FilesystemInterface
      */
-    private $localFs;
+    protected $localFs;
     /**
      * @var FilesystemInterface
      */
-    private $remoteFs;
+    protected $remoteFs;
     /**
      * @var Profiler
      */
-    private $profiler;
+    protected $profiler;
 
     /**
      * FilesDownloader constructor.
