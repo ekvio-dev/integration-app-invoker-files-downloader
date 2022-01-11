@@ -52,6 +52,8 @@ class FilesDownloader implements Invoker
     {
         $files = $arguments['parameters']['files'];
         $destination = $arguments['parameters']['destination'];
+        $excludeByName = $arguments['parameters']['exclude']['name'] ?? [];
+        $excludeByPath = $arguments['parameters']['exclude']['path'] ?? [];
 
         if(!$files) {
             throw new RuntimeException('No files in parameters');
@@ -63,12 +65,30 @@ class FilesDownloader implements Invoker
 
         $this->profiler->profile(sprintf('Checking %s directory existence...', $destination));
         if(!$this->localFs->has($destination)) {
-            $this->profiler->profile(sprintf('Creating %s directory....', $destination));
+            $this->profiler->profile(sprintf('Creating %s directory...', $destination));
             $this->localFs->createDir($destination);
         }
 
         $filenames = [];
         foreach ($files as $file) {
+
+            if($excludeByName) {
+                $this->profiler->profile('Excluding file by name...');
+                $name = basename($file);
+                if(in_array($name, $excludeByName, true)) {
+                    $this->profiler->profile(sprintf('Excluding %s by name...', $file));
+                    continue;
+                }
+            }
+
+            if($excludeByPath) {
+                $this->profiler->profile('Excluding file by path...');
+                if(in_array($file, $excludeByPath, true)) {
+                    $this->profiler->profile(sprintf('Excluding %s by path...', $file));
+                    continue;
+                }
+            }
+
             $this->profiler->profile(sprintf('Checking %s file existence...', $file));
             if(!$this->remoteFs->has($file)) {
                 throw new RuntimeException(sprintf('Remote file %s not exists', $file));
