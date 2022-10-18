@@ -5,53 +5,30 @@ namespace Ekvio\Integration\Invoker;
 
 use Ekvio\Integration\Contracts\Invoker;
 use Ekvio\Integration\Contracts\Profiler;
-use League\Flysystem\FileNotFoundException;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use RuntimeException;
 
-/**
- * Class FilesDownloader
- * @package App
- */
 class FilesDownloader implements Invoker
 {
     protected const NAME = 'Files downloader';
 
-    /**
-     * @var FilesystemInterface
-     */
-    protected $localFs;
-    /**
-     * @var FilesystemInterface
-     */
-    protected $remoteFs;
-    /**
-     * @var Profiler
-     */
-    protected $profiler;
+    protected FilesystemOperator $localFs;
+    protected FilesystemOperator $remoteFs;
+    protected Profiler $profiler;
+    protected array $config;
 
-    /**
-     * FilesDownloader constructor.
-     * @param FilesystemInterface $localFs
-     * @param FilesystemInterface $remoteFs
-     * @param Profiler $profiler
-     */
-    public function __construct(FilesystemInterface $localFs, FilesystemInterface $remoteFs, Profiler $profiler)
+    public function __construct(FilesystemOperator $localFs, FilesystemOperator $remoteFs, Profiler $profiler, array $config = [])
     {
         $this->localFs = $localFs;
         $this->remoteFs = $remoteFs;
         $this->profiler = $profiler;
+        $this->config = $config;
     }
 
-    /**
-     * @param array $arguments
-     * @return array
-     * @throws FileNotFoundException
-     */
     public function __invoke(array $arguments = [])
     {
-        $files = $arguments['parameters']['files'];
-        $destination = $arguments['parameters']['destination'];
+        $files = $arguments['parameters']['files'] ?? null;
+        $destination = $arguments['parameters']['destination'] ?? null;
         $excludeByName = $arguments['parameters']['exclude']['name'] ?? [];
         $excludeByPath = $arguments['parameters']['exclude']['path'] ?? [];
 
@@ -64,12 +41,12 @@ class FilesDownloader implements Invoker
         }
 
         $this->profiler->profile(sprintf('Checking %s directory existence...', $destination));
-        if(!$this->localFs->has($destination)) {
+        if(!$this->localFs->directoryExists($destination)) {
             $this->profiler->profile(sprintf('Creating %s directory...', $destination));
-            $this->localFs->createDir($destination);
+            $this->localFs->createDirectory($destination, $this->config);
         }
 
-        $filenames = [];
+        $fileMap = [];
         foreach ($files as $file) {
 
             if($excludeByName) {
@@ -90,25 +67,29 @@ class FilesDownloader implements Invoker
             }
 
             $this->profiler->profile(sprintf('Checking %s file existence...', $file));
-            if(!$this->remoteFs->has($file)) {
+            if(!$this->remoteFs->fileExists($file)) {
                 throw new RuntimeException(sprintf('Remote file %s not exists', $file));
             }
             $this->profiler->profile(sprintf('Downloading %s...', $file));
             $filename = sprintf('%s/%s', $destination, $file);
 
-            if(!$this->localFs->putStream($filename, $this->remoteFs->readStream($file))) {
-                throw new RuntimeException(sprintf('Cannot write to %s file...', $filename));
-            }
-
-            $filenames[] = $filename;
+            $fileMap[] = [
+                'from' => $file,
+                'to' => $filename
+            ];
+        }
+        
+        $locations = [];
+        foreach ($fileMap as $location) {
+            $this->profiler->profile(sprintf('Downloading %s...', $location['from']));
+            $this->localFs->writeStream($location['to'], $this->remoteFs->readStream($location['from']), $this->config);
+            
+            $locations[] = $location['to'];
         }
 
-        return $filenames;
+        return $locations;
     }
 
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return self::NAME;

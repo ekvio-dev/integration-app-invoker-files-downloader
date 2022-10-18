@@ -5,7 +5,7 @@ namespace Tests\Unit;
 
 use Ekvio\Integration\Invoker\FilesDownloader;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Memory\MemoryAdapter;
+use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Tests\DummyProfiler;
@@ -18,8 +18,8 @@ class FilesDownloaderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->localFs = new Filesystem(new MemoryAdapter());
-        $this->remoteFs = new Filesystem(new MemoryAdapter());
+        $this->localFs = new Filesystem(new InMemoryFilesystemAdapter());
+        $this->remoteFs = new Filesystem(new InMemoryFilesystemAdapter());
         $this->profiler = new DummyProfiler();
     }
 
@@ -57,7 +57,7 @@ class FilesDownloaderTest extends TestCase
 
     public function testDownloadRemoteFileSuccess()
     {
-        $this->remoteFs->put('/tmp/test.txt', 'some test content.');
+        $this->remoteFs->write('/tmp/test.txt', 'some test content.');
 
         $downloader = new FilesDownloader($this->localFs, $this->remoteFs, $this->profiler);
         $downloader(['parameters' => [
@@ -70,9 +70,9 @@ class FilesDownloaderTest extends TestCase
 
     public function testExcludeByName()
     {
-        $this->remoteFs->put('tmp/test.txt', 'test 1');
-        $this->remoteFs->put('tmp/test2.txt', 'test 2');
-        $this->remoteFs->put('tmp2/test.txt', 'test 3');
+        $this->remoteFs->write('tmp/test.txt', 'test 1');
+        $this->remoteFs->write('tmp/test2.txt', 'test 2');
+        $this->remoteFs->write('tmp2/test.txt', 'test 3');
 
         $downloader = new FilesDownloader($this->localFs, $this->remoteFs, $this->profiler);
         $downloader(['parameters' => [
@@ -92,9 +92,9 @@ class FilesDownloaderTest extends TestCase
 
     public function testExcludeByPath()
     {
-        $this->remoteFs->put('tmp/test.txt', 'test 1');
-        $this->remoteFs->put('tmp/test2.txt', 'test 2');
-        $this->remoteFs->put('tmp2/test.txt', 'test 3');
+        $this->remoteFs->write('tmp/test.txt', 'test 1');
+        $this->remoteFs->write('tmp/test2.txt', 'test 2');
+        $this->remoteFs->write('tmp2/test.txt', 'test 3');
 
         $downloader = new FilesDownloader($this->localFs, $this->remoteFs, $this->profiler);
         $downloader(['parameters' => [
